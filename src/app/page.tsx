@@ -21,7 +21,6 @@ export default function Home() {
       setError("Please enter some text to analyze");
       return;
     }
-
     setIsSubmitting(true);
     setError(null);
     
@@ -33,15 +32,22 @@ export default function Home() {
         },
         body: JSON.stringify({ text }),
       });
-
+      
       const data = await response.json();
-
+      
       if (!response.ok) {
         throw new Error(data.error || 'Failed to analyze text');
       }
-
+      
+      // The API already returns parsed analysis data!
+      if (!data.analysis) {
+        throw new Error('No analysis data received from API');
+      }
+      
       setResult(data.analysis);
+      
     } catch (err) {
+      console.error('Analysis error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsSubmitting(false);
@@ -49,7 +55,7 @@ export default function Home() {
   };
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+  
   const adjustHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -57,7 +63,7 @@ export default function Home() {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   };
-
+  
   useEffect(() => {
     adjustHeight();
   }, []);
@@ -85,21 +91,21 @@ export default function Home() {
           Analyze Text
         </SubmitButton>
       </div>
-
+      
       {error && (
         <div className="text-red-500 text-center max-w-2xl">
           {error}
         </div>
       )}
-
+      
       {result && (
         <div className="max-w-2xl w-full p-6 bg-gray-50 rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Entropy Analysis Results</h2>
           <div className="space-y-2">
-            <p><strong>Total Information Content:</strong> {(result.totalBits || 0).toFixed(2)} bits</p>
-            <p><strong>Average per Token:</strong> {(result.avgBits || 0).toFixed(2)} bits</p>
-            <p><strong>Total Tokens:</strong> {result.tokenCount || 0}</p>
-            <p><strong>Character Count:</strong> {result.text?.length || 0}</p>
+            <p><strong>Total Information Content:</strong> {result.totalBits.toFixed(2)} bits</p>
+            <p><strong>Average per Token:</strong> {result.avgBits.toFixed(2)} bits</p>
+            <p><strong>Total Tokens:</strong> {result.tokenCount}</p>
+            <p><strong>Character Count:</strong> {result.text.length}</p>
           </div>
           <div className="mt-4 p-3 bg-white rounded border">
             <p className="text-sm text-gray-600 mb-2">Original Text:</p>
