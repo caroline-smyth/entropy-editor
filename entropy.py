@@ -43,6 +43,7 @@ if __name__ == "__main__":
     # Read from stdin if available, otherwise use sample
     if not sys.stdin.isatty():
         sample = sys.stdin.read().strip()
+    # this actually never runs bc doesn't accept empty input
     else:
         sample = ( 
             "There is currently a lively, ongoing controversy among many sociologists and other professionals who study human nature : theories are being spun and arguments are being conducted among them about what it means that so many young people—and older people, for that matter—who live in our society today are so very interested in stories about zombies.?"
