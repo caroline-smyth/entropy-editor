@@ -72,7 +72,10 @@ export default function Home() {
         className="min-w-[25rem] max-w-2xl min-h-[1.5rem] p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent overflow-hidden"
         placeholder="Start typing here..."
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          console.log('Text updated:', e.target.value); // Debug log
+        }}
         onInput={adjustHeight}
         rows={1}
       />
@@ -85,6 +88,9 @@ export default function Home() {
         >
           Analyze Text
         </SubmitButton>
+        <p className="text-sm text-gray-500 mt-2">
+          Debug: Text length = {text.length}, Button enabled = {!(!text.trim())}
+        </p>
       </div>
 
       {error && (
@@ -105,6 +111,9 @@ export default function Home() {
           <div className="mt-4 p-3 bg-white rounded border">
             <p className="text-sm text-gray-600 mb-2">Original Text:</p>
             <p className="text-sm">{result.text}</p>
+          </div>
+          <div className="mt-2 text-xs text-gray-400">
+            Debug: {JSON.stringify(result)}
           </div>
         </div>
       )}

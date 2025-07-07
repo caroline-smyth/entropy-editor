@@ -7,11 +7,11 @@ import SubmitButton from "@/components/ui/SubmitButton";
 interface AnalysisResult {
   totalBits: number;
   avgBits: number;
-  tokenCount: number;
   text: string;
 }
 
 export default function Home() {
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [text, setText] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -25,7 +25,6 @@ export default function Home() {
 
     setIsSubmitting(true);
     setError(null);
-    
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -47,6 +46,13 @@ export default function Home() {
     } finally {
       setIsSubmitting(false);
     }
+    /*
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log("Submitted!");
+    } finally {
+      setIsSubmitting(false);
+    }*/
   };
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -66,28 +72,23 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen pt-48 gap-8 font-[family-name:var(--font-geist-sans)]">
       <h1 className="text-4xl font-bold text-center">Entropy Editor</h1>
-      
       <textarea 
         ref={textareaRef}
         className="min-w-[25rem] max-w-2xl min-h-[1.5rem] p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent overflow-hidden"
         placeholder="Start typing here..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
         onInput={adjustHeight}
         rows={1}
       />
-      
       <div className="text-center">
-        <SubmitButton 
-          onClick={handleSubmit}
-          isLoading={isSubmitting}
-          disabled={isSubmitting || !text.trim()}
-        >
-          Analyze Text
-        </SubmitButton>
-      </div>
-
-      {error && (
+      <SubmitButton 
+        onClick={handleSubmit}
+        isLoading={isSubmitting}
+        disabled={isSubmitting ||!text.trim()}
+      >
+        Analyze Text
+      </SubmitButton>
+    </div>
+    {error && (
         <div className="text-red-500 text-center max-w-2xl">
           {error}
         </div>
@@ -95,12 +96,11 @@ export default function Home() {
 
       {result && (
         <div className="max-w-2xl w-full p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Entropy Analysis Results</h2>
+          <h2 className="text-xl font-semibold mb-4">Analysis Results</h2>
           <div className="space-y-2">
-            <p><strong>Total Information Content:</strong> {(result.totalBits || 0).toFixed(2)} bits</p>
-            <p><strong>Average per Token:</strong> {(result.avgBits || 0).toFixed(2)} bits</p>
-            <p><strong>Total Tokens:</strong> {result.tokenCount || 0}</p>
-            <p><strong>Character Count:</strong> {result.text?.length || 0}</p>
+            <p><strong>Total Bits:</strong> {result.totalBits.toFixed(2)}</p>
+            <p><strong>Bits per Token:</strong> {result.avgBits.toFixed(2)}</p>
+            <p><strong>Character Count:</strong> {result.text.length}</p>
           </div>
           <div className="mt-4 p-3 bg-white rounded border">
             <p className="text-sm text-gray-600 mb-2">Original Text:</p>

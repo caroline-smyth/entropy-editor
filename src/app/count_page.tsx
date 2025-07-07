@@ -5,9 +5,10 @@ import { useState } from "react";
 import SubmitButton from "@/components/ui/SubmitButton";
 
 interface AnalysisResult {
-  totalBits: number;
-  avgBits: number;
-  tokenCount: number;
+  wordCount: number;
+  sentenceCount: number;
+  uniqueWords: number;
+  entropyScore: number;
   text: string;
 }
 
@@ -72,7 +73,10 @@ export default function Home() {
         className="min-w-[25rem] max-w-2xl min-h-[1.5rem] p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent overflow-hidden"
         placeholder="Start typing here..."
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          console.log('Text updated:', e.target.value); // Debug log
+        }}
         onInput={adjustHeight}
         rows={1}
       />
@@ -85,6 +89,9 @@ export default function Home() {
         >
           Analyze Text
         </SubmitButton>
+        <p className="text-sm text-gray-500 mt-2">
+          Debug: Text length = {text.length}, Button enabled = {!(!text.trim())}
+        </p>
       </div>
 
       {error && (
@@ -95,12 +102,13 @@ export default function Home() {
 
       {result && (
         <div className="max-w-2xl w-full p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Entropy Analysis Results</h2>
+          <h2 className="text-xl font-semibold mb-4">Analysis Results</h2>
           <div className="space-y-2">
-            <p><strong>Total Information Content:</strong> {(result.totalBits || 0).toFixed(2)} bits</p>
-            <p><strong>Average per Token:</strong> {(result.avgBits || 0).toFixed(2)} bits</p>
-            <p><strong>Total Tokens:</strong> {result.tokenCount || 0}</p>
-            <p><strong>Character Count:</strong> {result.text?.length || 0}</p>
+            <p><strong>Word Count:</strong> {result.wordCount}</p>
+            <p><strong>Sentence Count:</strong> {result.sentenceCount}</p>
+            <p><strong>Unique Words:</strong> {result.uniqueWords}</p>
+            <p><strong>Entropy Score:</strong> {result.entropyScore.toFixed(2)}</p>
+            <p><strong>Character Count:</strong> {result.text.length}</p>
           </div>
           <div className="mt-4 p-3 bg-white rounded border">
             <p className="text-sm text-gray-600 mb-2">Original Text:</p>
