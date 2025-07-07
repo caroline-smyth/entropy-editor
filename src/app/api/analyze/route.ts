@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Path to your Python script
-    const scriptPath = path.join(process.cwd(), 'gpt2_only_entropy.py');
+    const scriptPath = path.join(process.cwd(), 'entropy.py');
     
     // Create a promise to handle the Python process
     const result = await new Promise<{ totalBits: number; avgBits: number; tokenCount: number }>((resolve, reject) => {
