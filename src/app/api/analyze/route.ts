@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     // Debug: Log the exact text being sent
     console.log('Text being sent to Python:', JSON.stringify(text));
     console.log('Text length:', text.length);
-    console.log('Text character codes (first 20):', text.slice(0, 20).split('').map(c => c.charCodeAt(0)));
+    console.log('Text character codes (first 20):', text.slice(0, 20).split('').map((c: string) => c.charCodeAt(0)));
 
     const scriptPath = path.join(process.cwd(), 'entropy.py');
     
